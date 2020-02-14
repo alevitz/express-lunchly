@@ -9,16 +9,15 @@ const router = new express.Router();
 
 /** Homepage: show list of customers. */
 
-router.get("/", async function(req, res, next) {
+router.get("/", async function (req, res, next) {
   try {
     let customers = await Customer.all();
-    console.log(req.query);
     const searchResult = req.query.search;
 
-    if(searchResult){
-      customers = customers.filter(customer => customer.fullName().includes(searchResult))
+    if (searchResult) {
+      customers = customers.filter(customer =>
+        customer.fullName().toLowerCase().includes(searchResult.toLowerCase()));
     }
-
 
     return res.render("customer_list.html", { customers });
   } catch (err) {
@@ -26,9 +25,20 @@ router.get("/", async function(req, res, next) {
   }
 });
 
+/** Top 10: shows top 10 customers by reservation count. */
+
+router.get("/top", async function (req, res, next) {
+  try {
+    let results = await Customer.topByReservation();
+    return res.render("customer_list_ordered.html", { results });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 /** Form to add a new customer. */
 
-router.get("/add/", async function(req, res, next) {
+router.get("/add/", async function (req, res, next) {
   try {
     return res.render("customer_new_form.html");
   } catch (err) {
@@ -38,7 +48,7 @@ router.get("/add/", async function(req, res, next) {
 
 /** Handle adding a new customer. */
 
-router.post("/add/", async function(req, res, next) {
+router.post("/add/", async function (req, res, next) {
   try {
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
@@ -56,7 +66,7 @@ router.post("/add/", async function(req, res, next) {
 
 /** Show a customer, given their ID. */
 
-router.get("/:id/", async function(req, res, next) {
+router.get("/:id/", async function (req, res, next) {
   try {
     const customer = await Customer.get(req.params.id);
 
@@ -70,7 +80,7 @@ router.get("/:id/", async function(req, res, next) {
 
 /** Show form to edit a customer. */
 
-router.get("/:id/edit/", async function(req, res, next) {
+router.get("/:id/edit/", async function (req, res, next) {
   try {
     const customer = await Customer.get(req.params.id);
 
@@ -82,7 +92,7 @@ router.get("/:id/edit/", async function(req, res, next) {
 
 /** Handle editing a customer. */
 
-router.post("/:id/edit/", async function(req, res, next) {
+router.post("/:id/edit/", async function (req, res, next) {
   try {
     const customer = await Customer.get(req.params.id);
     customer.firstName = req.body.firstName;
@@ -99,7 +109,7 @@ router.post("/:id/edit/", async function(req, res, next) {
 
 /** Handle adding a new reservation. */
 
-router.post("/:id/add-reservation/", async function(req, res, next) {
+router.post("/:id/add-reservation/", async function (req, res, next) {
   try {
     const customerId = req.params.id;
     const startAt = new Date(req.body.startAt);

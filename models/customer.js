@@ -14,6 +14,24 @@ class Customer {
     this.notes = notes;
   }
 
+  // The above code abstracts away to the below code.
+  // constructor(obj) {
+    
+  //   const id = obj.id;
+  //   const firstName = obj.firstName
+  //   const lastName = obj.lastName
+  //   const phone = obj.phone
+  //   const notes = obj.notes
+  
+
+  //   this.id = id;
+  //   this.firstName = firstName;
+  //   this.lastName = lastName;
+  //   this.phone = phone;
+  //   this.notes = notes;
+  // }
+  
+
   /** find all customers. */
 
   static async all() {
@@ -31,6 +49,20 @@ class Customer {
 
   fullName() {
     return `${this.firstName} ${this.lastName}`;
+  }
+
+  static async topByReservation() {
+    const results = await db.query(
+      `SELECT c.id, c.first_name AS "firstName", c.last_name AS "lastName", COUNT(*) AS "resNum"
+      FROM customers AS c 
+      JOIN reservations AS r
+      ON c.id = r.customer_id
+      GROUP BY c.id, "firstName", "lastName"
+      ORDER BY "resNum" DESC
+      LIMIT 10;`
+    );
+    
+    return results.rows.map(c => ({ customer: new Customer(c), resNum: c.resNum }));
   }
 
 
