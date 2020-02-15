@@ -9,7 +9,7 @@
 <ol style="column-count: 1">
   {% for result in results %}
   <li>
-    <a href="/{{ result.customer.id }}/">{{ result.customer.fullName() }}:</a> {{ result.resNum }} Reservations 
+    <a href="/{{ result.customer.id }}/">{{ result.customer.fullName }}:</a> {{ result.resNum }} Reservations 
   </li>
   {% endfor %}
 </ol>

@@ -16,6 +16,19 @@ class Reservation {
     this.notes = notes;
   }
 
+  get numGuests() {
+    console.log("***************** FIRING!!")
+    return this._numGuests;
+  }
+
+  set numGuests(val) {
+    if (val < 1) {
+      throw new Error("Must be a num greater than 0!", 400);
+    }
+    this._numGuests = val;
+  }
+
+
   /** formatter for startAt */
 
   getformattedStartAt() {
@@ -38,6 +51,7 @@ class Reservation {
 
     return results.rows.map(row => new Reservation(row));
   }
+
 
   async save() {
     if (this.id === undefined) {

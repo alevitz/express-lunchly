@@ -47,9 +47,24 @@ class Customer {
     return results.rows.map(c => new Customer(c));
   }
 
-  fullName() {
+  get fullName() {
     return `${this.firstName} ${this.lastName}`;
   }
+
+  set fullName(val) {
+    if (val === 'Test'){
+      console.log("No input!");
+    }
+    this.firstName = val;
+
+  }
+
+
+
+
+  // fullName() {
+  //   return `${this.firstName} ${this.lastName}`;
+  // }
 
   static async topByReservation() {
     const results = await db.query(

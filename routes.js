@@ -15,8 +15,9 @@ router.get("/", async function (req, res, next) {
     const searchResult = req.query.search;
 
     if (searchResult) {
+      customers[0].fullName = 'Tet';
       customers = customers.filter(customer =>
-        customer.fullName().toLowerCase().includes(searchResult.toLowerCase()));
+        customer.fullName.toLowerCase().includes(searchResult.toLowerCase()));
     }
 
     return res.render("customer_list.html", { customers });
@@ -72,6 +73,8 @@ router.get("/:id/", async function (req, res, next) {
 
     const reservations = await customer.getReservations();
 
+    console.log(reservations[0]);
+
     return res.render("customer_detail.html", { customer, reservations });
   } catch (err) {
     return next(err);
@@ -123,6 +126,8 @@ router.post("/:id/add-reservation/", async function (req, res, next) {
       notes
     });
     await reservation.save();
+
+    
 
     return res.redirect(`/${customerId}/`);
   } catch (err) {
